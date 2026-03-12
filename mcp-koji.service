@@ -1,0 +1,39 @@
+[Unit]
+Description=Koji MCP Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+WorkingDirectory=/opt/mcp-servers/koji
+ExecStart=/opt/mcp-servers/koji/venv/bin/mcp-koji \
+  --koji-url https://koji.fedoraproject.org/kojihub \
+  --host 127.0.0.1 \
+  --port 8803
+ExecStartPost=/bin/sleep 2
+Restart=always
+RestartSec=3
+
+# Full security hardening
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+NoNewPrivileges=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictAddressFamilies=AF_INET AF_INET6
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+# Read-only filesystem
+ReadOnlyPaths=/opt/mcp-servers/koji
+
+[Install]
+WantedBy=multi-user.target

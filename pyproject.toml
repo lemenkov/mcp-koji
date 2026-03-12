@@ -1,0 +1,16 @@
+[project]
+name = "mcp-koji"
+version = "0.1.0"
+description = "MCP server for Fedora Koji build system"
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp>=3.0.0",
+    "koji>=1.33.0",
+]
+
+[project.scripts]
+mcp-koji = "mcp_koji.server:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
