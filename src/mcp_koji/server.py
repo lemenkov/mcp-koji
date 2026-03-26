@@ -101,7 +101,10 @@ async def get_build_info(build_id: int) -> str:
     Args:
         build_id: Koji build ID
     """
-    build = koji_client.get_build(build_id)
+    try:
+        build = koji_client.get_build(build_id)
+    except ValueError as e:
+        return str(e)
     
     if not build:
         return f"Build ID {build_id} not found"
@@ -137,7 +140,10 @@ async def get_latest_builds(tag: str, package: str | None = None) -> str:
         tag: Tag name (e.g., 'f40-updates', 'rawhide')
         package: Optional package name to filter
     """
-    builds = koji_client.get_latest_builds(tag, package=package)
+    try:
+        builds = koji_client.get_latest_builds(tag, package=package)
+    except ValueError as e:
+        return str(e)
     
     if not builds:
         if package:

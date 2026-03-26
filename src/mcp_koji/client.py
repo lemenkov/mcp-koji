@@ -66,7 +66,11 @@ class KojiClient:
         Returns:
             Build info dict or None
         """
-        return self.session.getBuild(build_id)
+        return
+        try:
+            return  self.session.getBuild(build_id)
+        except koji.GenericError as e:
+            raise ValueError(f"Koji error for build id '{build_id}': {e}") from e
     
     def get_latest_builds(
         self,
@@ -83,7 +87,10 @@ class KojiClient:
         Returns:
             List of build dicts
         """
-        return self.session.getLatestBuilds(tag, package=package)
+        try:
+            return self.session.getLatestBuilds(tag, package=package)
+        except koji.GenericError as e:
+            raise ValueError(f"Koji error for tag '{tag}': {e}") from e
     
     def list_tags(
         self,
