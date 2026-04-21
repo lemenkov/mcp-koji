@@ -14,7 +14,7 @@ mcp = FastMCP("Koji MCP Server")
 koji_client = KojiClient()
 
 
-@mcp.tool()
+@mcp.tool(annotations={"readOnlyHint": True, "openWorldHint": True}, tags={"read"})
 async def get_user_info(username: str) -> str:
     """
     Get Koji user information.
@@ -35,7 +35,7 @@ async def get_user_info(username: str) -> str:
     return response
 
 
-@mcp.tool()
+@mcp.tool(annotations={"readOnlyHint": True, "openWorldHint": True}, tags={"read"})
 async def list_user_builds(
     username: str,
     state: str | None = None,
@@ -93,7 +93,7 @@ async def list_user_builds(
     return response
 
 
-@mcp.tool()
+@mcp.tool(annotations={"readOnlyHint": True, "openWorldHint": True}, tags={"read"})
 async def get_build_info(build_id: int) -> str:
     """
     Get detailed information about a specific build.
@@ -131,7 +131,7 @@ async def get_build_info(build_id: int) -> str:
     return response
 
 
-@mcp.tool()
+@mcp.tool(annotations={"readOnlyHint": True, "openWorldHint": True}, tags={"read"})
 async def get_latest_builds(tag: str, package: str | None = None) -> str:
     """
     Get latest builds in a specific tag.
@@ -173,7 +173,7 @@ async def get_latest_builds(tag: str, package: str | None = None) -> str:
     return response
 
 
-@mcp.tool()
+@mcp.tool(annotations={"readOnlyHint": True, "openWorldHint": True}, tags={"read"})
 async def list_build_tags(build_id: int) -> str:
     """
     List tags for a specific build.
@@ -194,7 +194,7 @@ async def list_build_tags(build_id: int) -> str:
     return response
 
 
-@mcp.tool()
+@mcp.tool(annotations={"readOnlyHint": True, "openWorldHint": True}, tags={"read"})
 async def get_task_info(task_id: int) -> str:
     """
     Get information about a Koji task.
@@ -228,7 +228,9 @@ async def get_task_info(task_id: int) -> str:
         response += f"Completed: {task.get('completion_time')}\n"
     
     return response
-@mcp.tool()
+
+
+@mcp.tool(annotations={"readOnlyHint": True, "openWorldHint": True}, tags={"read"})
 async def list_task_logs(task_id: int) -> str:
     """
     List available log files for a Koji task.
@@ -267,7 +269,7 @@ async def list_task_logs(task_id: int) -> str:
     return response
 
 
-@mcp.tool()
+@mcp.tool(annotations={"readOnlyHint": True, "openWorldHint": True}, tags={"read"})
 async def get_task_log(
     task_id: int,
     filename: str = "build.log",
