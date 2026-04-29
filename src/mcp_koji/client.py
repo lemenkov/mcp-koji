@@ -5,18 +5,18 @@ from typing import Optional, List, Dict, Any
 
 class KojiClient:
     """Client for Fedora Koji build system."""
-    
+
     def __init__(self, koji_url: str = "https://koji.fedoraproject.org/kojihub"):
         self.koji_url = koji_url
         self.session = koji.ClientSession(koji_url)
-    
+
     def get_user(self, username: str) -> Optional[Dict[str, Any]]:
         """
         Get user information by username.
-        
+
         Args:
             username: Koji username
-            
+
         Returns:
             User info dict or None
         """
@@ -31,13 +31,13 @@ class KojiClient:
     ) -> List[Dict[str, Any]]:
         """
         List builds with optional filters.
-        
+
         Args:
             user_id: Filter by user ID
             package_id: Filter by package ID
             state: Filter by build state (0=building, 1=complete, 3=failed, 4=canceled)
             limit: Maximum number of results
-            
+
         Returns:
             List of build dicts
         """
@@ -49,20 +49,20 @@ class KojiClient:
             kwargs['packageID'] = package_id
         if state is not None:
             kwargs['state'] = state
-        
+
         # Add queryOpts
         kwargs['queryOpts'] = {'limit': limit, 'order': '-build_id'}
-        
+
         builds = self.session.listBuilds(**kwargs)
         return builds if builds else []
 
     def get_build(self, build_id: int) -> Optional[Dict[str, Any]]:
         """
         Get build information by ID.
-        
+
         Args:
             build_id: Build ID
-            
+
         Returns:
             Build info dict or None
         """
@@ -71,7 +71,7 @@ class KojiClient:
             return  self.session.getBuild(build_id)
         except koji.GenericError as e:
             raise ValueError(f"Koji error for build id '{build_id}': {e}") from e
-    
+
     def get_latest_builds(
         self,
         tag: str,
@@ -79,11 +79,11 @@ class KojiClient:
     ) -> List[Dict[str, Any]]:
         """
         Get latest builds in a tag.
-        
+
         Args:
             tag: Tag name (e.g., 'f40-updates')
             package: Optional package name filter
-            
+
         Returns:
             List of build dicts
         """
@@ -91,7 +91,7 @@ class KojiClient:
             return self.session.getLatestBuilds(tag, package=package)
         except koji.GenericError as e:
             raise ValueError(f"Koji error for tag '{tag}': {e}") from e
-    
+
     def list_tags(
         self,
         build_id: Optional[int] = None,
@@ -99,11 +99,11 @@ class KojiClient:
     ) -> List[Dict[str, Any]]:
         """
         List tags.
-        
+
         Args:
             build_id: Filter by build ID
             package: Filter by package name
-            
+
         Returns:
             List of tag dicts
         """
@@ -114,19 +114,19 @@ class KojiClient:
         else:
             # Listing all tags can be huge, so don't do it
             return []
-    
+
     def get_task_info(self, task_id: int) -> Optional[Dict[str, Any]]:
         """
         Get task information.
-        
+
         Args:
             task_id: Task ID
-            
+
         Returns:
             Task info dict or None
         """
         return self.session.getTaskInfo(task_id)
-    
+
     def list_tasks(
         self,
         user_id: Optional[int] = None,
@@ -135,12 +135,12 @@ class KojiClient:
     ) -> List[Dict[str, Any]]:
         """
         List tasks.
-        
+
         Args:
             user_id: Filter by user ID
             state: Filter by task states (0=free, 1=open, 2=closed, 3=canceled, 4=assigned, 5=failed)
             limit: Maximum number of results
-            
+
         Returns:
             List of task dicts
         """
@@ -149,16 +149,16 @@ class KojiClient:
             opts['owner'] = user_id
         if state is not None:
             opts['state'] = state
-        
+
         return self.session.listTasks(opts=opts)[:limit]
 
     def list_task_output(self, task_id: int) -> Dict[str, Any]:
         """
         List available output files for a task.
-        
+
         Args:
             task_id: Task ID
-            
+
         Returns:
             Dict with task output file listing
         """
